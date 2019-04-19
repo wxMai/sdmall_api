@@ -52,6 +52,28 @@ public class ShippingServiceImpl implements IShippingService {
         return ServerResponse.createByErrorMessage("更新地址失败");
     }
 
+    @Override
+    public ServerResponse updateByUserId(Integer userId, Shipping shipping)
+    {
+        int count = shippingMapper.selectCountByUserId(userId);
+        shipping.setUserId(userId);
+        if(count > 0){
+            int rowCount = shippingMapper.updateByUserId(shipping);
+            if(rowCount > 0){
+                return ServerResponse.createBySuccess("完善地址成功");
+            }
+        }else{
+            int rowCount = shippingMapper.insert(shipping);
+            if(rowCount > 0){
+                Map result = Maps.newHashMap();
+                result.put("shippingId",shipping.getId());
+                return ServerResponse.createBySuccess("完善地址成功",result);
+            }
+        }
+
+        return ServerResponse.createByErrorMessage("完善地址失败");
+    }
+
     public ServerResponse<Shipping> select(Integer userId, Integer shippingId){
         Shipping shipping = shippingMapper.selectByShippingIdUserId(userId,shippingId);
         if(shipping == null){
@@ -75,7 +97,7 @@ public class ShippingServiceImpl implements IShippingService {
         if(shipping == null){
             return ServerResponse.createByErrorMessage("无法查询到该地址");
         }
-        return ServerResponse.createBySuccess("更新地址成功",shipping);
+        return ServerResponse.createBySuccess(shipping);
     }
 
 

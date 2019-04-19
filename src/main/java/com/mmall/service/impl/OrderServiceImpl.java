@@ -308,6 +308,25 @@ public class OrderServiceImpl implements IOrderService {
     }
 
 
+    public ServerResponse<String> submit(Integer userId, Long orderNo)
+    {
+        Order order  = orderMapper.selectByUserIdAndOrderNo(userId,orderNo);
+        if(order == null){
+            return ServerResponse.createByErrorMessage("该用户此订单不存在");
+        }
+        if(order.getStatus() != Const.OrderStatusEnum.NO_PAY.getCode()){
+            return ServerResponse.createByErrorMessage("订单无法确认支付");
+        }
+        Order updateOrder = new Order();
+        updateOrder.setId(order.getId());
+        updateOrder.setStatus(Const.OrderStatusEnum.PAID.getCode());
+
+        int row = orderMapper.updateByPrimaryKeySelective(updateOrder);
+        if(row > 0){
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
+    }
 
 
     public ServerResponse getOrderCartProduct(Integer userId){

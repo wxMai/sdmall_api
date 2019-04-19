@@ -90,6 +90,17 @@ public class OrderController {
         return iOrderService.getOrderList(user.getId(),pageNum,pageSize);
     }
 
+    // 确认支付
+    @RequestMapping("submit.do")
+    @ResponseBody
+    public ServerResponse submit(HttpSession session, Long orderNo){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user ==null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.submit(user.getId(),orderNo);
+    }
+
 
 
 
