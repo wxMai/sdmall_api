@@ -2,6 +2,8 @@ package com.mmall.dao;
 
 import com.mmall.pojo.UserMessage;
 
+import java.util.List;
+
 public interface UserMessageMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -16,4 +18,9 @@ public interface UserMessageMapper {
     int updateByPrimaryKeyWithBLOBs(UserMessage record);
 
     int updateByPrimaryKey(UserMessage record);
+
+    List<UserMessage> selectByUserId(Integer userId);
+
+    List<UserMessage> selectAll();
+
 }

@@ -1,11 +1,14 @@
 package com.mmall.controller.portal;
 
+import com.github.pagehelper.PageInfo;
 import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Shipping;
 import com.mmall.pojo.User;
+import com.mmall.pojo.UserMessage;
 import com.mmall.service.IShippingService;
+import com.mmall.service.IUserMessageService;
 import com.mmall.service.IUserService;
 //import com.sun.corba.se.spi.activation.Server;
 import com.mmall.vo.UserVo;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -30,6 +34,8 @@ public class UserController
     private IUserService iUserService;
     @Autowired
     private IShippingService iShippingService;
+    @Autowired
+    private IUserMessageService iUserMessageService;
 
 
     /**
@@ -184,16 +190,27 @@ public class UserController
         return response;
     }
 
-    @RequestMapping(value = "messageList.do", method = RequestMethod.POST)
+    @RequestMapping(value = "messageList.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<Object> messageList(HttpSession session)
+    public ServerResponse<PageInfo> messageList(HttpSession session, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize)
     {
-        /*User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
         if (currentUser == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录,需要强制登录status=10");
         }
-        return iUserService.getUserInfoAndShipping(currentUser.getId());*/
-        return null;
+        return iUserMessageService.getListByUserId(currentUser.getId(), pageNum, pageSize);
+    }
+
+    @RequestMapping(value = "messageAdd.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<String> messageAdd(HttpSession session, UserMessage userMessage)
+    {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录,需要强制登录status=10");
+        }
+        userMessage.setUserId(currentUser.getId());
+        return iUserMessageService.addMessage(userMessage);
     }
 
 
