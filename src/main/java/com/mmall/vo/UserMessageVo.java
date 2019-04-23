@@ -15,7 +15,7 @@ public class UserMessageVo
 
     private String content;
 
-    private List<UserMessageResponse> userMessageResponseList;
+    private List<UserMessageResponseVo> userMessageResponseList;
 
     public UserMessageVo(Integer id, Integer userId, String title, String content)
     {
@@ -70,12 +70,12 @@ public class UserMessageVo
         this.content = content == null ? null : content.trim();
     }
 
-    public List<UserMessageResponse> getUserMessageResponseList()
+    public List<UserMessageResponseVo> getUserMessageResponseList()
     {
         return userMessageResponseList;
     }
 
-    public void setUserMessageResponseList(List<UserMessageResponse> userMessageResponseList)
+    public void setUserMessageResponseList(List<UserMessageResponseVo> userMessageResponseList)
     {
         this.userMessageResponseList = userMessageResponseList;
     }

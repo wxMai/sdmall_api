@@ -2,11 +2,14 @@ package com.mmall.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.mmall.common.ServerResponse;
+import com.mmall.dao.UserMapper;
 import com.mmall.dao.UserMessageMapper;
 import com.mmall.dao.UserMessageResponseMapper;
 import com.mmall.pojo.*;
 import com.mmall.service.IUserMessageService;
+import com.mmall.vo.UserMessageResponseVo;
 import com.mmall.vo.UserMessageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,8 @@ public class UserMessageServiceImpl implements IUserMessageService
     private UserMessageMapper userMessageMapper;
     @Autowired
     private UserMessageResponseMapper userMessageResponseMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public ServerResponse<PageInfo> getListByUserId(Integer userId, int pageNum, int pageSize)
@@ -75,7 +80,16 @@ public class UserMessageServiceImpl implements IUserMessageService
         userMessageVo.setTitle(userMessage.getTitle());
         userMessageVo.setContent(userMessage.getContent());
 
-        userMessageVo.setUserMessageResponseList(userMessageResponsesList);
+        List<UserMessageResponseVo> userMessageResponseVoList = Lists.newArrayList();
+
+        for (UserMessageResponse userMessageResponse : userMessageResponsesList){
+            UserMessageResponseVo userMessageResponseVo = new UserMessageResponseVo(userMessageResponse);
+            userMessageResponseVo.setUserName(userMapper.selectUserNameByUserId(userMessageResponse.getUserId()));
+            userMessageResponseVo.formatData();
+            userMessageResponseVoList.add(userMessageResponseVo);
+        }
+
+        userMessageVo.setUserMessageResponseList(userMessageResponseVoList);
 
         return userMessageVo;
     }
