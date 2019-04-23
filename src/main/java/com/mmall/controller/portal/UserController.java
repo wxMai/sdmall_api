@@ -7,6 +7,7 @@ import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Shipping;
 import com.mmall.pojo.User;
 import com.mmall.pojo.UserMessage;
+import com.mmall.pojo.UserMessageResponse;
 import com.mmall.service.IShippingService;
 import com.mmall.service.IUserMessageService;
 import com.mmall.service.IUserService;
@@ -211,6 +212,40 @@ public class UserController
         }
         userMessage.setUserId(currentUser.getId());
         return iUserMessageService.addMessage(userMessage);
+    }
+
+    /**
+     * 获取留言信息详情（包括回复信息）
+     * @param session
+     * @param messageId
+     * @return ServerResponse
+     */
+    @RequestMapping(value = "messageDetail.do")
+    @ResponseBody
+    public ServerResponse messageDetail(HttpSession session, Integer messageId)
+    {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录,需要强制登录status=10");
+        }
+        return iUserMessageService.getInfoAndResponse(messageId);
+    }
+
+    /**
+     * 留言信息回复
+     * @param session
+     * @param userMessageResponse
+     * @return
+     */
+    @RequestMapping(value = "messageResponse.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse messageResponse(HttpSession session, UserMessageResponse userMessageResponse)
+    {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录,需要强制登录status=10");
+        }
+        return null;
     }
 
 
