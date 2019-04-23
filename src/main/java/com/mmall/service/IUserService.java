@@ -1,6 +1,8 @@
 package com.mmall.service;
 
+import com.github.pagehelper.PageInfo;
 import com.mmall.common.ServerResponse;
+import com.mmall.pojo.PayInfo;
 import com.mmall.pojo.User;
 import com.mmall.vo.UserVo;
 
@@ -30,4 +32,11 @@ public interface IUserService {
     ServerResponse<UserVo> getUserInfoAndShipping(Integer userId);
 
     ServerResponse checkAdminRole(User user);
+
+    ServerResponse<PageInfo> getAdminList(int pageNum,int pageSize);
+
+    ServerResponse<PageInfo> getNormalUserList(int pageNum,int pageSize);
+
+    ServerResponse<String> delUser(Integer userId);
+
 }

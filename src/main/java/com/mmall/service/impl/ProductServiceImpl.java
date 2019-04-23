@@ -67,6 +67,16 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.createByErrorMessage("新增或更新产品参数不正确");
     }
 
+    @Override
+    public ServerResponse delProduct(Integer productId)
+    {
+        int rowCount = productMapper.deleteByPrimaryKey(productId);
+        if(rowCount > 0){
+            return ServerResponse.createBySuccess("删除产品成功");
+        }
+        return ServerResponse.createBySuccess("删除产品失败");
+    }
+
 
     public ServerResponse<String> setSaleStatus(Integer productId,Integer status){
         if(productId == null || status == null){

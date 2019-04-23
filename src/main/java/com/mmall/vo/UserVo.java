@@ -49,6 +49,20 @@ public class UserVo
         this.updateTime = updateTime;
     }
 
+    public UserVo(User user)
+    {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.email = user.getEmail();
+        this.phone = user.getPhone();
+        this.question = user.getQuestion();
+        this.answer = user.getAnswer();
+        this.role = user.getRole();
+        this.createTime = user.getCreateTime();
+        this.updateTime = user.getUpdateTime();
+    }
+
     public UserVo()
     {
         super();

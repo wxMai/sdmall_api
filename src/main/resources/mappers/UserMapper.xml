@@ -218,5 +218,12 @@
     where id = #{userId}
     </select>
 
+    <select id="selectByRole" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from mmall_user
+        where role = #{role}
+    </select>
+
 
 </mapper>

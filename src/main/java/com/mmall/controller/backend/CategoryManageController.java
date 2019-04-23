@@ -100,6 +100,22 @@ public class CategoryManageController {
         }
     }
 
+    @RequestMapping("del_category.do")
+    @ResponseBody
+    public ServerResponse delCategory(HttpSession session,Integer categoryId) {
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录");
+        }
+
+        if(iUserService.checkAdminRole(user).isSuccess()){
+            //更新categoryName
+            return iCategoryService.delCategory(categoryId);
+        }else{
+            return ServerResponse.createByErrorMessage("无权限操作,需要管理员权限");
+        }
+    }
+
 
 
 

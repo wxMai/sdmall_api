@@ -44,6 +44,16 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.createByErrorMessage("添加品类失败");
     }
 
+    @Override
+    public ServerResponse delCategory(Integer categoryId)
+    {
+        int rowCount = categoryMapper.deleteByPrimaryKey(categoryId);
+        if(rowCount > 0){
+            return ServerResponse.createBySuccess("删除品类成功");
+        }
+        return ServerResponse.createByErrorMessage("删除品类失败");
+    }
+
     public ServerResponse updateCategoryName(Integer categoryId,String categoryName){
         if(categoryId == null || StringUtils.isBlank(categoryName)){
             return ServerResponse.createByErrorMessage("更新品类参数错误");

@@ -1,5 +1,6 @@
 package com.mmall.service.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
@@ -249,6 +250,50 @@ public class UserServiceImpl implements IUserService
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();
+    }
+
+    @Override
+    public ServerResponse<PageInfo> getAdminList(int pageNum,int pageSize)
+    {
+        List<User> userList = userMapper.selectByRole(1);
+
+        List<UserVo> userVoList = Lists.newArrayList();
+        for (User user : userList)
+        {
+            UserVo userVo = new UserVo(user);
+            userVoList.add(userVo);
+        }
+
+        PageInfo pageResult = new PageInfo(userVoList);
+        pageResult.setList(userVoList);
+        return ServerResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    public ServerResponse<PageInfo> getNormalUserList(int pageNum,int pageSize)
+    {
+        List<User> userList = userMapper.selectByRole(0);
+
+        List<UserVo> userVoList = Lists.newArrayList();
+        for (User user : userList)
+        {
+            UserVo userVo = new UserVo(user);
+            userVoList.add(userVo);
+        }
+
+        PageInfo pageResult = new PageInfo(userVoList);
+        pageResult.setList(userVoList);
+        return ServerResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    public ServerResponse<String> delUser(Integer userId)
+    {
+        int resultCount = userMapper.deleteByPrimaryKey(userId);
+        if (resultCount == 0) {
+            return ServerResponse.createByErrorMessage("删除失败");
+        }
+        return ServerResponse.createBySuccessMessage("删除成功");
     }
 
 
