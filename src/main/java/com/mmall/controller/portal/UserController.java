@@ -9,6 +9,7 @@ import com.mmall.pojo.User;
 import com.mmall.pojo.UserMessage;
 import com.mmall.pojo.UserMessageResponse;
 import com.mmall.service.IShippingService;
+import com.mmall.service.IUserMessageResponseService;
 import com.mmall.service.IUserMessageService;
 import com.mmall.service.IUserService;
 //import com.sun.corba.se.spi.activation.Server;
@@ -37,6 +38,8 @@ public class UserController
     private IShippingService iShippingService;
     @Autowired
     private IUserMessageService iUserMessageService;
+    @Autowired
+    private IUserMessageResponseService iUserMessageResponseService;
 
 
     /**
@@ -239,13 +242,17 @@ public class UserController
      */
     @RequestMapping(value = "messageResponse.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse messageResponse(HttpSession session, UserMessageResponse userMessageResponse)
+    public ServerResponse<String> messageResponse(HttpSession session, UserMessageResponse userMessageResponse)
     {
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
         if (currentUser == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录,需要强制登录status=10");
         }
-        return null;
+
+        userMessageResponse.setUserId(currentUser.getId());
+        userMessageResponse.setIsAdmin(0);
+
+        return iUserMessageResponseService.response(userMessageResponse);
     }
 
 

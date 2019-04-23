@@ -45,7 +45,7 @@
       is_admin, create_time, update_time, 
       content)
     values (#{id,jdbcType=INTEGER}, #{messageId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
-      #{isAdmin,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{isAdmin,jdbcType=TINYINT}, now(), now(),
       #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.mmall.pojo.UserMessageResponse" >

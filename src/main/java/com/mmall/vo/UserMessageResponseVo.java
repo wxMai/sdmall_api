@@ -22,6 +22,8 @@ public class UserMessageResponseVo
 
     private String content;
 
+    private String userName;
+
     public UserMessageResponseVo(Integer id, Integer messageId, Integer userId, Integer isAdmin, Date createTime, Date updateTime, String content) {
         this.id = id;
         this.messageId = messageId;
