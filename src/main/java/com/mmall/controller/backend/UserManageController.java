@@ -76,38 +76,88 @@ public class UserManageController {
         }
     }
 
-    @RequestMapping(value="addAdmin.do",method = RequestMethod.POST)
+    /**
+     * 根据userId获取用户信息
+     * @param session
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value="info.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> addAdmin(HttpSession session, User userData){
+    public ServerResponse<User> normalUserList(HttpSession session, Integer userId){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
         }
 
-        if(iUserService.checkAdminRole(user).isSuccess()){
+        if(!iUserService.checkAdminRole(user).isSuccess()){
+            return ServerResponse.createByErrorMessage("无权限操作");
+        }
+
+        return iUserService.getInformation(userId);
+    }
+
+    /**
+     * 添加管理员
+     * @param session
+     * @param userData
+     * @return
+     */
+    @RequestMapping(value="saveAdmin.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse saveAdmin(HttpSession session, User userData){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
+        }
+
+        if(!iUserService.checkAdminRole(user).isSuccess()){
+            return ServerResponse.createByErrorMessage("无权限操作");
+        }
+
+        if (userData.getId() == null) {
             userData.setRole(1);
-            return iUserService.register(userData);
-        }else{
-            return ServerResponse.createByErrorMessage("无权限操作");
+            return iUserService.addUser(userData);
         }
+
+        userData.setRole(1);
+        return iUserService.updateInformationAndPassword(userData);
+
     }
 
-    @RequestMapping(value="addNormalUser.do",method = RequestMethod.POST)
+    /**
+     * 添加普通用户
+     * @param session
+     * @param userData
+     * @return
+     */
+    @RequestMapping(value="saveNormalUser.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> addNormalUser(HttpSession session, User userData){
+    public ServerResponse saveNormalUser(HttpSession session, User userData){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
         }
 
-        if(iUserService.checkAdminRole(user).isSuccess()){
-            userData.setRole(0);
-            return iUserService.register(userData);
-        }else{
+        if(!iUserService.checkAdminRole(user).isSuccess()){
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+
+        if (userData.getId() == null) {
+            userData.setRole(0);
+            return iUserService.addUser(userData);
+        }
+
+        userData.setRole(0);
+        return iUserService.updateInformationAndPassword(userData);
     }
 
+    /**
+     * 删除用户
+     * @param session
+     * @param userId
+     * @return
+     */
     @RequestMapping(value="delUser.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> addAdmin(HttpSession session, Integer userId){

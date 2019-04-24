@@ -15,6 +15,8 @@ public interface IUserService {
 
     ServerResponse<String> register(User user);
 
+    ServerResponse<String> addUser(User user);
+
     ServerResponse<String> checkValid(String str,String type);
 
     ServerResponse selectQuestion(String username);
@@ -26,6 +28,8 @@ public interface IUserService {
     ServerResponse<String> resetPassword(String passwordOld,String passwordNew,User user);
 
     ServerResponse<User> updateInformation(User user);
+
+    ServerResponse<User> updateInformationAndPassword(User user);
 
     ServerResponse<User> getInformation(Integer userId);
 
