@@ -5,6 +5,9 @@ import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
+import com.mmall.pojo.UserMessageResponse;
+import com.mmall.service.IUserMessageResponseService;
+import com.mmall.service.IUserMessageService;
 import com.mmall.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +29,10 @@ public class UserManageController {
 
     @Autowired
     private IUserService iUserService;
+    @Autowired
+    private IUserMessageService iUserMessageService;
+    @Autowired
+    private IUserMessageResponseService iUserMessageResponseService;
 
     @RequestMapping(value="login.do",method = RequestMethod.POST)
     @ResponseBody
@@ -60,6 +67,13 @@ public class UserManageController {
         }
     }
 
+    /**
+     * 普通账号列表
+     * @param session
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @RequestMapping(value="normalUserList.do",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<PageInfo> normalUserList(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
@@ -176,6 +190,83 @@ public class UserManageController {
         }else{
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+    }
+
+    /**
+     * 留言列表
+     * @param session
+     * @param pageNum
+     * @param pageSize
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value="userMessageList.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<PageInfo> userMessageList(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
+                                              @RequestParam(value = "pageSize",defaultValue = "10")int pageSize, Integer userId){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
+
+        }
+
+        if(!iUserService.checkAdminRole(user).isSuccess()){
+            return ServerResponse.createByErrorMessage("无权限操作");
+        }
+
+        if(userId > 0){
+            return iUserMessageService.getListByUserId(userId, pageNum, pageSize);
+        }
+
+        return iUserMessageService.getList(pageNum, pageSize);
+
+    }
+
+    /**
+     * 留言详情（包括回复）
+     * @param session
+     * @param messageId
+     * @return
+     */
+    @RequestMapping(value="userMessageInfo.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse userMessageInfo(HttpSession session, Integer messageId){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
+
+        }
+
+        if(!iUserService.checkAdminRole(user).isSuccess()){
+            return ServerResponse.createByErrorMessage("无权限操作");
+        }
+
+        return iUserMessageService.getInfoAndResponse(messageId);
+    }
+
+    /**
+     * 留言回复
+     * @param session
+     * @param userMessageResponse
+     * @return
+     */
+    @RequestMapping(value="userMessageResponse.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse userMessageResponse(HttpSession session, UserMessageResponse userMessageResponse){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
+
+        }
+
+        if(!iUserService.checkAdminRole(user).isSuccess()){
+            return ServerResponse.createByErrorMessage("无权限操作");
+        }
+
+        userMessageResponse.setUserId(user.getId());
+        userMessageResponse.setIsAdmin(1);
+
+        return iUserMessageResponseService.response(userMessageResponse);
     }
 
 }

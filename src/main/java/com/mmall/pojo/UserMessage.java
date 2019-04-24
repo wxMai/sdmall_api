@@ -5,6 +5,8 @@ public class UserMessage {
 
     private Integer userId;
 
+    private Integer user_id;
+
     private String title;
 
     private String content;
@@ -42,6 +44,16 @@ public class UserMessage {
 
     public void setTitle(String title) {
         this.title = title == null ? null : title.trim();
+    }
+
+    public void setUser_id(Integer user_id)
+    {
+        this.user_id = user_id;
+    }
+
+    public Integer getUser_id()
+    {
+        return user_id;
     }
 
     public String getContent() {
