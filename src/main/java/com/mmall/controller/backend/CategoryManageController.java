@@ -54,15 +54,15 @@ public class CategoryManageController {
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录");
         }
-        String outStr = null;
+       /* String outStr = null;
         try {
             outStr = new String(categoryName.getBytes("iso-8859-1"),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }
+        }*/
         if(iUserService.checkAdminRole(user).isSuccess()){
             //更新categoryName
-            return iCategoryService.updateCategoryName(categoryId,outStr);
+            return iCategoryService.updateCategoryName(categoryId,categoryName);
         }else{
             return ServerResponse.createByErrorMessage("无权限操作,需要管理员权限");
         }
