@@ -19,4 +19,7 @@ public interface IUserMessageService
 
     ServerResponse<UserMessageVo> getInfoAndResponse(Integer messageId);
 
+    // 删除留言
+    ServerResponse delMessage(Integer messageId);
+
 }

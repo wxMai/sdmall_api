@@ -69,6 +69,16 @@ public class UserMessageServiceImpl implements IUserMessageService
         return ServerResponse.createByErrorMessage("没用找到该留言信息");
     }
 
+    @Override
+    public ServerResponse delMessage(Integer messageId)
+    {
+        int rowCount = userMessageMapper.deleteByPrimaryKey(messageId);
+        if(rowCount > 0){
+            return ServerResponse.createBySuccess("删除留言成功");
+        }
+        return ServerResponse.createByErrorMessage("删除留言失败");
+    }
+
 
     private UserMessageVo assembleUserMessageVo(UserMessage userMessage, List<UserMessageResponse> userMessageResponsesList)
     {

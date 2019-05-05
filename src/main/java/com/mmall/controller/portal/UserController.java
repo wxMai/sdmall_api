@@ -205,6 +205,13 @@ public class UserController
         return iUserMessageService.getListByUserId(currentUser.getId(), pageNum, pageSize);
     }
 
+    @RequestMapping(value = "allMessageList.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<PageInfo> allMessageList(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize)
+    {
+        return iUserMessageService.getList(pageNum, pageSize);
+    }
+
     @RequestMapping(value = "messageAdd.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> messageAdd(HttpSession session, UserMessage userMessage)
